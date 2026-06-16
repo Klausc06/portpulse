@@ -10,6 +10,7 @@ struct PortPulseApp: App {
     @StateObject private var powerStore = PowerMonitorStore()
     @State private var monitor: PortMonitor?
     @State private var powerPoller: PowerPoller?
+    @State private var delegateHandler: PortMonitorDelegateHandler?
     
     var body: some Scene {
         MenuBarExtra {
@@ -21,11 +22,14 @@ struct PortPulseApp: App {
     }
     
     func startMonitoring() {
-        let m = PortMonitor()
-        m.delegate = PortMonitorDelegateHandler(
+        let handler = PortMonitorDelegateHandler(
             portState: portState,
             history: connectionHistory
         )
+        delegateHandler = handler
+        
+        let m = PortMonitor()
+        m.delegate = handler
         m.start(interval: 2.0)
         monitor = m
         
