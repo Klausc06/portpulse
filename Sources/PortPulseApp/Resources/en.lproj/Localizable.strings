@@ -1,0 +1,26 @@
+/* English Localization for Diagnostic Keys */
+
+/* Charging */
+"charging.cable.limiting" = "Cable is limiting charging speed";
+"charging.cable.limiting.detail" = "Cable rated at %dW but charger can deliver %dW";
+"charging.reduced" = "Charging at reduced power";
+"charging.reduced.detail" = "Charging at %dW (charger can do up to %dW)";
+"charging.well" = "Charging well";
+"charging.unknown" = "Charging";
+
+/* Data Speed */
+"dataspeed.cable.limiting" = "Cable is limiting data speed";
+"dataspeed.cable.limiting.detail" = "Cable only supports USB 2.0 (480 Mbps)";
+"dataspeed.device.limiting" = "Device is limiting data speed";
+"dataspeed.device.limiting.detail" = "Device runs at %1$@, cable supports %2$@";
+"dataspeed.ok" = "Running at full speed";
+"dataspeed.unknown" = "Cable speed unknown";
+"dataspeed.unknown.detail" = "No e-marker data; cannot determine cable capability";
+
+/* Cable Trust */
+"trust.zero.vid" = "Unregistered cable vendor";
+"trust.zero.vid.detail" = "Vendor ID is 0x0000 (not in USB-IF database)";
+"trust.reserved.latency" = "Unusual cable latency";
+"trust.reserved.latency.detail" = "Cable latency field uses a reserved value";
+"trust.speed.current.mismatch" = "Unusual cable configuration";
+"trust.speed.current.mismatch.detail" = "Claims 5A current but reports USB 2.0 speed";

@@ -1,0 +1,26 @@
+/* 简体中文本地化 - 诊断键值 */
+
+/* 充电 */
+"charging.cable.limiting" = "线缆限制了充电速度";
+"charging.cable.limiting.detail" = "线缆额定 %dW，但充电器可提供 %dW";
+"charging.reduced" = "以较低功率充电";
+"charging.reduced.detail" = "当前充电 %dW（充电器最高 %dW）";
+"charging.well" = "充电正常";
+"charging.unknown" = "充电中";
+
+/* 数据速度 */
+"dataspeed.cable.limiting" = "线缆限制了数据传输速度";
+"dataspeed.cable.limiting.detail" = "线缆仅支持 USB 2.0（480 Mbps）";
+"dataspeed.device.limiting" = "设备限制了数据传输速度";
+"dataspeed.device.limiting.detail" = "设备运行速度 %1$@，线缆支持 %2$@";
+"dataspeed.ok" = "以全速运行";
+"dataspeed.unknown" = "线缆速度未知";
+"dataspeed.unknown.detail" = "无 e-marker 数据，无法确定线缆能力";
+
+/* 线缆信任 */
+"trust.zero.vid" = "未注册的线缆厂商";
+"trust.zero.vid.detail" = "厂商 ID 为 0x0000（不在 USB-IF 数据库中）";
+"trust.reserved.latency" = "异常的线缆延迟";
+"trust.reserved.latency.detail" = "线缆延迟字段使用了保留值";
+"trust.speed.current.mismatch" = "异常的线缆配置";
+"trust.speed.current.mismatch.detail" = "声称 5A 电流但报告 USB 2.0 速度";
