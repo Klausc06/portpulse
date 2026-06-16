@@ -55,7 +55,7 @@ struct ExplainChargingBottleneckIntent: AppIntent {
             explanation += ". \(detail)"
         }
         
-        return .result(value: explanation, dialog: explanation)
+        return .result(value: explanation, dialog: "\(explanation)")
     }
 }
 

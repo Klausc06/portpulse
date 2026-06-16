@@ -11,44 +11,38 @@ let package = Package(
         .executable(name: "portpulse", targets: ["PortPulseCLI"]),
     ],
     targets: [
-        // Core models, diagnostics, serialization
         .target(
             name: "PortPulseCore",
             path: "Sources/PortPulseCore"
         ),
-        
-        // IOKit hardware interface
         .target(
             name: "PortPulseHardware",
             dependencies: ["PortPulseCore"],
             path: "Sources/PortPulseHardware"
         ),
-        
-        // Port monitoring and event diffing
         .target(
             name: "PortPulseMonitor",
             dependencies: ["PortPulseCore", "PortPulseHardware"],
             path: "Sources/PortPulseMonitor"
         ),
-        
-        // CLI tool
         .executableTarget(
             name: "PortPulseCLI",
             dependencies: ["PortPulseCore", "PortPulseHardware", "PortPulseMonitor"],
             path: "Sources/PortPulseCLI"
         ),
-        
-        // Widget extension
         .executableTarget(
             name: "PortPulseWidget",
             dependencies: ["PortPulseCore", "PortPulseHardware"],
             path: "Sources/PortPulseWidget"
         ),
-        
-        // Tests
+        .executableTarget(
+            name: "PortPulseIntents",
+            dependencies: ["PortPulseCore", "PortPulseHardware"],
+            path: "Sources/PortPulseIntents"
+        ),
         .testTarget(
             name: "PortPulseTests",
-            dependencies: ["PortPulseCore", "PortPulseHardware"],
+            dependencies: ["PortPulseCore"],
             path: "Tests"
         ),
     ]
