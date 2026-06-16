@@ -3,6 +3,22 @@ import PortPulseCore
 import PortPulseHardware
 import PortPulseMonitor
 
+private func openWindow<Content: View>(_ title: String, width: CGFloat, height: CGFloat, @ViewBuilder content: () -> Content) {
+    for window in NSApp.windows where window.title == title {
+        window.makeKeyAndOrderFront(nil)
+        return
+    }
+    let hosting = NSHostingView(rootView: content())
+    let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: width, height: height),
+                          styleMask: [.titled, .closable, .resizable],
+                          backing: .buffered, defer: false)
+    window.title = title
+    window.contentView = hosting
+    window.center()
+    window.makeKeyAndOrderFront(nil)
+    NSApp.activate(ignoringOtherApps: true)
+}
+
 @main
 struct PortPulseApp: App {
     @StateObject private var portState = USBCPortState()
@@ -70,9 +86,6 @@ struct MenuBarView: View {
     @ObservedObject var portState: USBCPortState
     @ObservedObject var history: ConnectionHistory
     @ObservedObject var powerStore: PowerMonitorStore
-    @State private var showHistory = false
-    @State private var showPowerMonitor = false
-    @State private var showSettings = false
     
     private var connectedPorts: [USBCPort] {
         portState.ports.filter(\.isConnected)
@@ -124,7 +137,9 @@ struct MenuBarView: View {
             // Footer
             HStack {
                 Button {
-                    showHistory = true
+                    openWindow("Connection History", width: 450, height: 500) {
+                        HistoryView(history: history)
+                    }
                 } label: {
                     Image(systemName: "clock.arrow.circlepath")
                         .font(.caption)
@@ -133,7 +148,9 @@ struct MenuBarView: View {
                 .help("Connection History")
                 
                 Button {
-                    showPowerMonitor = true
+                    openWindow("Power Monitor", width: 400, height: 500) {
+                        PowerMonitorView(store: powerStore)
+                    }
                 } label: {
                     Image(systemName: "bolt.fill")
                         .font(.caption)
@@ -143,7 +160,9 @@ struct MenuBarView: View {
                 .help("Power Monitor")
                 
                 Button {
-                    showSettings = true
+                    openWindow("Settings", width: 450, height: 420) {
+                        SettingsView()
+                    }
                 } label: {
                     Image(systemName: "gear")
                         .font(.caption)
@@ -165,15 +184,6 @@ struct MenuBarView: View {
             .padding(.vertical, 8)
         }
         .frame(width: 360, height: 400)
-        .sheet(isPresented: $showHistory) {
-            HistoryView(history: history)
-        }
-        .sheet(isPresented: $showPowerMonitor) {
-            PowerMonitorView(store: powerStore)
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
-        }
     }
 }
 
