@@ -18,10 +18,6 @@ struct PortPulseApp: App {
             MenuBarLabel(ports: portState.ports)
         }
         .menuBarExtraStyle(.window)
-        
-        Settings {
-            SettingsView()
-        }
     }
     
     func startMonitoring() {
@@ -72,6 +68,7 @@ struct MenuBarView: View {
     @ObservedObject var powerStore: PowerMonitorStore
     @State private var showHistory = false
     @State private var showPowerMonitor = false
+    @State private var showSettings = false
     
     private var connectedPorts: [USBCPort] {
         portState.ports.filter(\.isConnected)
@@ -141,6 +138,15 @@ struct MenuBarView: View {
                 .buttonStyle(.plain)
                 .help("Power Monitor")
                 
+                Button {
+                    showSettings = true
+                } label: {
+                    Image(systemName: "gear")
+                        .font(.caption)
+                }
+                .buttonStyle(.plain)
+                .help("Settings")
+                
                 Spacer()
                 
                 Button {
@@ -160,6 +166,9 @@ struct MenuBarView: View {
         }
         .sheet(isPresented: $showPowerMonitor) {
             PowerMonitorView(store: powerStore)
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
     }
 }

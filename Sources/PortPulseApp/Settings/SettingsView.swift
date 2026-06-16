@@ -9,9 +9,25 @@ struct SettingsView: View {
     @AppStorage("notifyBottleneck") private var notifyBottleneck = true
     @AppStorage("showTechnicalDetails") private var showTechnicalDetails = false
     @AppStorage("fontSize") private var fontSize: Double = 13
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        Form {
+        VStack(spacing: 0) {
+            HStack {
+                Image(systemName: "gear")
+                    .foregroundColor(.accentColor)
+                Text("Settings")
+                    .font(.headline)
+                Spacer()
+                Button("Done") { dismiss() }
+                    .buttonStyle(.plain)
+                    .foregroundColor(.accentColor)
+            }
+            .padding()
+            
+            Divider()
+            
+            Form {
             Section("General") {
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, newValue in
@@ -55,10 +71,11 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
             }
+            }
+            .formStyle(.grouped)
+            .frame(width: 450, height: 420)
+            .padding()
         }
-        .formStyle(.grouped)
-        .frame(width: 450, height: 420)
-        .padding()
     }
     
     private func toggleLaunchAtLogin(_ enabled: Bool) {
