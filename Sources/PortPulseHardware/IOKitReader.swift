@@ -668,4 +668,73 @@ extension IOKitReader {
         
         return dict
     }
+    
+    public func dumpDebugInfo() -> [[String: Any]] {
+        let classNames = [
+            "AppleHPMInterfaceType10",
+            "AppleHPMInterfaceType11",
+            "AppleHPMInterfaceType12",
+            "AppleTCControllerType10",
+            "AppleTCControllerType11",
+            "IOPortFeaturePowerSource",
+            "IOPortTransportComponentCCUSBPDSOP",
+            "IOPortTransportComponentCCUSBPDSOPp",
+            "IOPortTransportComponentCCUSBPDSOPpp",
+            "IOUSBDevice",
+            "AppleUSBXHCI",
+        ]
+        
+        var results: [[String: Any]] = []
+        
+        for className in classNames {
+            var iterator: io_iterator_t = 0
+            let matching = IOServiceMatching(className)
+            let result = IOServiceGetMatchingServices(kIOMainPortDefault, matching, &iterator)
+            
+            guard result == KERN_SUCCESS else { continue }
+            defer { IOObjectRelease(iterator) }
+            
+            var service = IOIteratorNext(iterator)
+            while service != IO_OBJECT_NULL {
+                defer { IOObjectRelease(service) }
+                
+                var entry: [String: Any] = ["className": className]
+                
+                var path = [CChar](repeating: 0, count: 512)
+                IORegistryEntryGetPath(service, kIOServicePlane, &path)
+                entry["registryPath"] = String(cString: path)
+                
+                if let props = IOKitReader.readProperties(service) {
+                    entry["properties"] = sanitizeForJSON(props)
+                }
+                
+                results.append(entry)
+                service = IOIteratorNext(iterator)
+            }
+        }
+        
+        return results
+    }
+    
+    private func sanitizeForJSON(_ obj: Any) -> Any {
+        if let data = obj as? Data {
+            return data.map { String(format: "%02x", $0) }.joined()
+        }
+        if let set = obj as? Set<AnyHashable> {
+            return set.map { sanitizeForJSON($0) }
+        }
+        if let dict = obj as? [String: Any] {
+            return dict.mapValues { sanitizeForJSON($0) }
+        }
+        if let arr = obj as? [Any] {
+            return arr.map { sanitizeForJSON($0) }
+        }
+        if obj is NSNumber || obj is NSString || obj is NSNull {
+            return obj
+        }
+        if let date = obj as? Date {
+            return ISO8601DateFormatter().string(from: date)
+        }
+        return String(describing: obj)
+    }
 }

@@ -85,3 +85,67 @@ public struct DeviceJSON: Codable {
         self.negotiatedSpeed = device.negotiatedSpeed.rawValue
     }
 }
+
+// MARK: - JSON → Domain conversion (for snapshot import)
+
+extension PortJSON {
+    public func toPort() -> USBCPort {
+        USBCPort(
+            id: "\(connectionType)_\(portIndex)",
+            portIndex: portIndex,
+            locationName: locationName,
+            connectionType: USBConnectionType(rawValue: connectionType) ?? .nothing,
+            cable: cable.toCable(),
+            charger: charger.toCharger(),
+            devices: devices.map { $0.toDevice() }
+        )
+    }
+}
+
+extension CableInfoJSON {
+    public func toCable() -> CableInfo {
+        CableInfo(
+            hasEMarker: hasEMarker,
+            usbSpeed: USBSpeed(rawValue: usbSpeed) ?? .unknown,
+            currentRating: currentRating,
+            maxVoltage: maxVoltage,
+            maxWattage: maxWattage,
+            vendorID: UInt16(vendorID.dropFirst(2), radix: 16) ?? 0,
+            productID: UInt16(productID.dropFirst(2), radix: 16) ?? 0,
+            vendorName: vendorName,
+            isPassive: isPassive,
+            pdRevision: pdRevision,
+            isCertified: isCertified
+        )
+    }
+}
+
+extension ChargerInfoJSON {
+    public func toCharger() -> ChargerInfo {
+        ChargerInfo(
+            vendorName: vendorName,
+            pdos: pdos.map { $0.toPDO() }
+        )
+    }
+}
+
+extension PDOJSON {
+    public func toPDO() -> ChargerPDO {
+        ChargerPDO(
+            voltage: voltage,
+            maxCurrent: maxCurrent,
+            isActive: isActive
+        )
+    }
+}
+
+extension DeviceJSON {
+    public func toDevice() -> ConnectedDevice {
+        ConnectedDevice(
+            id: "imported_\(name)",
+            name: name,
+            vendorName: vendorName,
+            negotiatedSpeed: USBSpeed(rawValue: negotiatedSpeed) ?? .unknown
+        )
+    }
+}
